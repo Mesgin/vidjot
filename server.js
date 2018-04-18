@@ -8,7 +8,13 @@ app.engine('handlebars', exphbs({
 app.set('view engine', 'handlebars')
 
 app.get('/',(req,res)=>{
-    res.json()
+    const title = 'Welcome1'
+    res.render('index',{
+        title
+    })
+})
+app.get('/about',(req,res)=>{
+    res.render('about')
 })
 
 app.listen(8080,()=>{
