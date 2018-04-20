@@ -21,6 +21,9 @@ app.engine('handlebars', exphbs({
 }))
 app.set('view engine', 'handlebars')
 
+// Body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // Index Route
 app.get('/', (req, res) => {
@@ -38,6 +41,26 @@ app.get('/about', (req, res) => {
 // Add Idea Form
 app.get('/ideas/add', (req, res) => {
   res.render('ideas/add')
+})
+
+// Process Form
+app.post('ideas/add',(req,res)=>{
+    let errors = []
+    if(!req.body.title){
+        errors.push({text:'Please add a title'})
+    }
+    if(!req.body.details){
+        errors.push({text:'Please add details'})
+    }
+    if(errors.length>0){
+        res.render('ideas/add',{
+            errors,
+            title: req.body.title,
+            details: req.body.details
+        })
+    } else {
+        res.send('hi')
+    }
 })
 
 const port = 5000
