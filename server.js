@@ -1,15 +1,14 @@
 const express = require('express')
 const exphbs  = require('express-handlebars')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
 
 const app = express()
 
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise
 // Connect to mongoose
-mongoose.connect('mongodb://localhost/vidjot-dev')
-  .then(() => console.log('MongoDB Connected...'))
-  .catch(err => console.log(err))
+mongoose.connect('mongodb+srv://user:vidjot@cluster0-oohzx.mongodb.net/ideas')
 
 // Load Idea Model
 require('./models/Idea')
@@ -59,7 +58,15 @@ app.post('ideas/add',(req,res)=>{
             details: req.body.details
         })
     } else {
-        res.send('hi')
+        const newUser = {
+            title: req.body.title,
+            details: req.body.details
+        }
+        new Idea(newUser)
+        .save()
+        .then(idea => {
+            res.redirect('/ideas')
+        })
     }
 })
 
