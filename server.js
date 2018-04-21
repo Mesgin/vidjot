@@ -55,6 +55,11 @@ app.get('/ideas/add', (req, res) => {
     res.render('ideas/add')
 })
 
+// Edit Idea Form
+app.get('/ideas/edit/:id', (req, res) => {
+    res.render('ideas/edit')
+})
+
 // Process Form
 app.post('/ideas/add', (req, res) => {
     let errors = []
