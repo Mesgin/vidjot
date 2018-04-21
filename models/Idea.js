@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 // Create Schema
 const IdeaSchema = new Schema({
@@ -17,4 +17,4 @@ const IdeaSchema = new Schema({
   }
 });
 
-mongoose.model('ideas', IdeaSchema);
+mongoose.model('ideas', IdeaSchema)
