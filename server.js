@@ -1,47 +1,56 @@
-const express = require('express');
-const exphbs  = require('express-handlebars');
+const express = require('express')
+const exphbs  = require('express-handlebars')
 const methodOverride = require('method-override')
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const flash = require('connect-flash')
+const session = require('express-session')
 
-const app = express();
+const app = express()
 
 // Map global promise - get rid of warning
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 // Connect to mongoose
 mongoose.connect('mongodb+srv://user:vidjot@cluster0-oohzx.mongodb.net/ideas')
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
     
 // Load Idea Model
-require('./models/Idea');
-const Idea = mongoose.model('ideas');
+require('./models/Idea')
+const Idea = mongoose.model('ideas')
 
 // Handlebars Middleware
 app.engine('handlebars', exphbs({
   defaultLayout: 'main'
-}));
-app.set('view engine', 'handlebars');
+}))
+app.set('view engine', 'handlebars')
 
 // Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // Method override middleware
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method'))
+
+// Express session midleware
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+  }))
 
 // Index Route
 app.get('/', (req, res) => {
-  const title = 'Welcome';
+  const title = 'Welcome'
   res.render('index', {
     title: title
-  });
-});
+  })
+})
 
 // About Route
 app.get('/about', (req, res) => {
-  res.render('about');
-});
+  res.render('about')
+})
 
 // Idea Index Page
 app.get('/ideas', (req, res) => {
@@ -50,14 +59,14 @@ app.get('/ideas', (req, res) => {
     .then(ideas => {
       res.render('ideas/index', {
         ideas:ideas
-      });
-    });
-});
+      })
+    })
+})
 
 // Add Idea Form
 app.get('/ideas/add', (req, res) => {
-  res.render('ideas/add');
-});
+  res.render('ideas/add')
+})
 
 // Edit Idea Form
 app.get('/ideas/edit/:id', (req, res) => {
@@ -67,19 +76,19 @@ app.get('/ideas/edit/:id', (req, res) => {
   .then(idea => {
     res.render('ideas/edit', {
       idea:idea
-    });
-  });
-});
+    })
+  })
+})
 
 // Process Form
 app.post('/ideas', (req, res) => {
-  let errors = [];
+  let errors = []
 
   if(!req.body.title){
-    errors.push({text:'Please add a title'});
+    errors.push({text:'Please add a title'})
   }
   if(!req.body.details){
-    errors.push({text:'Please add some details'});
+    errors.push({text:'Please add some details'})
   }
 
   if(errors.length > 0){
@@ -87,7 +96,7 @@ app.post('/ideas', (req, res) => {
       errors: errors,
       title: req.body.title,
       details: req.body.details
-    });
+    })
   } else {
     const newUser = {
       title: req.body.title,
@@ -96,10 +105,10 @@ app.post('/ideas', (req, res) => {
     new Idea(newUser)
       .save()
       .then(idea => {
-        res.redirect('/ideas');
+        res.redirect('/ideas')
       })
   }
-});
+})
 
 // Edit Form process
 app.put('/ideas/:id', (req, res) => {
@@ -108,15 +117,15 @@ app.put('/ideas/:id', (req, res) => {
   })
   .then(idea => {
     // new values
-    idea.title = req.body.title;
-    idea.details = req.body.details;
+    idea.title = req.body.title
+    idea.details = req.body.details
 
     idea.save()
       .then(idea => {
-        res.redirect('/ideas');
+        res.redirect('/ideas')
       })
-  });
-});
+  })
+})
 
 //Delete idea
 app.delete('/ideas/:id',(req,res)=>{
@@ -126,8 +135,8 @@ app.delete('/ideas/:id',(req,res)=>{
     })
 })
 
-const port = 5000;
+const port = 5000
 
 app.listen(port, () =>{
-  console.log(`Server started on port ${port}`);
-});
+  console.log(`Server started on port ${port}`)
+})
