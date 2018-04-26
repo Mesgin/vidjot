@@ -10,6 +10,7 @@ const app = express()
 
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise
+
 // Connect to mongoose
 mongoose.connect('mongodb+srv://user:vidjot@cluster0-oohzx.mongodb.net/ideas')
     .then(() => console.log('MongoDB Connected...'))
