@@ -149,6 +149,10 @@ app.delete('/ideas/:id',(req,res)=>{
     })
 })
 
+// User login route
+app.get('/users/login',(req,res)=>{
+    res.send('login')
+})
 const port = 5000
 
 app.listen(port, () =>{
