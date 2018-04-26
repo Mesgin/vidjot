@@ -143,7 +143,7 @@ app.put('/ideas/:id', (req, res) => {
 app.delete('/ideas/:id',(req,res)=>{
     Idea.remove({_id:req.params.id})
     .then(()=>{
-        req.flash('success_msg','Video idea removed')
+        req.flash('success_msg','Video idea deleted')
         res.redirect('/ideas')
     })
 })
