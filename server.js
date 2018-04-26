@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const flash = require('connect-flash')
 const session = require('express-session')
+const path = require('path')
 
 const app = express()
 
@@ -12,6 +13,8 @@ const app = express()
 const ideas = require('./routes/ideas')
 const users = require('./routes/users')
 
+// Static public folder
+app.use(express.static(path.join(__dirname,'public')))
 
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise
