@@ -8,6 +8,11 @@ const session = require('express-session')
 
 const app = express()
 
+// Load routes
+const ideas = require('./routes/ideas')
+const users = require('./routes/users')
+
+
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise
 
@@ -15,10 +20,6 @@ mongoose.Promise = global.Promise
 mongoose.connect('mongodb+srv://user:vidjot@cluster0-oohzx.mongodb.net/ideas')
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
-    
-// Load Idea Model
-require('./models/Idea')
-const Idea = mongoose.model('ideas')
 
 // Handlebars Middleware
 app.engine('handlebars', exphbs({
@@ -63,101 +64,9 @@ app.get('/about', (req, res) => {
   res.render('about')
 })
 
-// Idea Index Page
-app.get('/ideas', (req, res) => {
-  Idea.find({})
-    .sort({date:'desc'})
-    .then(ideas => {
-      res.render('ideas/index', {
-        ideas:ideas
-      })
-    })
-})
-
-// Add Idea Form
-app.get('/ideas/add', (req, res) => {
-  res.render('ideas/add')
-})
-
-// Edit Idea Form
-app.get('/ideas/edit/:id', (req, res) => {
-  Idea.findOne({
-    _id: req.params.id
-  })
-  .then(idea => {
-    res.render('ideas/edit', {
-      idea:idea
-    })
-  })
-})
-
-// Process Form
-app.post('/ideas', (req, res) => {
-  let errors = []
-
-  if(!req.body.title){
-    errors.push({text:'Please add a title'})
-  }
-  if(!req.body.details){
-    errors.push({text:'Please add some details'})
-  }
-
-  if(errors.length > 0){
-    res.render('ideas/add', {
-      errors: errors,
-      title: req.body.title,
-      details: req.body.details
-    })
-  } else {
-    const newUser = {
-      title: req.body.title,
-      details: req.body.details
-    }
-    new Idea(newUser)
-      .save()
-      .then(idea => {
-        req.flash('success_msg','Video idea added')
-        res.redirect('/ideas')
-      })
-  }
-})
-
-// Edit Form process
-app.put('/ideas/:id', (req, res) => {
-  Idea.findOne({
-    _id: req.params.id
-  })
-  .then(idea => {
-    // new values
-    idea.title = req.body.title
-    idea.details = req.body.details
-
-    idea.save()
-      .then(idea => {
-        req.flash('success_msg','Video idea Edited')
-        res.redirect('/ideas')
-      })
-  })
-})
-
-//Delete idea
-app.delete('/ideas/:id',(req,res)=>{
-    Idea.remove({_id:req.params.id})
-    .then(()=>{
-        req.flash('success_msg','Video idea deleted')
-        res.redirect('/ideas')
-    })
-})
-
-// User login route
-app.get('/users/login',(req,res)=>{
-    res.send('login')
-})
-
-// User resigter route
-app.get('/users/register',(req,res)=>{
-    res.send('register')
-})
+// Use routes
+app.use('/ideas',ideas)
+app.use('/users',users)
 
 const port = 5000
 
