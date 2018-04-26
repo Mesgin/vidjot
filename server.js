@@ -153,6 +153,12 @@ app.delete('/ideas/:id',(req,res)=>{
 app.get('/users/login',(req,res)=>{
     res.send('login')
 })
+
+// User resigter route
+app.get('/users/register',(req,res)=>{
+    res.send('register')
+})
+
 const port = 5000
 
 app.listen(port, () =>{
