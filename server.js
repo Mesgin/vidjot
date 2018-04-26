@@ -133,7 +133,7 @@ app.put('/ideas/:id', (req, res) => {
 
     idea.save()
       .then(idea => {
-        req.flash('success_msg','Video idea updated')
+        req.flash('success_msg','Video idea Edited')
         res.redirect('/ideas')
       })
   })
