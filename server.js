@@ -6,12 +6,16 @@ const mongoose = require('mongoose')
 const flash = require('connect-flash')
 const session = require('express-session')
 const path = require('path')
+const passport = require('passport')
 
 const app = express()
 
 // Load routes
 const ideas = require('./routes/ideas')
 const users = require('./routes/users')
+
+// Passport config
+require('./config/passport')(passport)
 
 // Static public folder
 app.use(express.static(path.join(__dirname,'public')))
@@ -43,6 +47,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true
   }))
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(flash())
 
