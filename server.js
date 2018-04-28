@@ -16,6 +16,8 @@ const users = require('./routes/users')
 
 // Passport config
 require('./config/passport')(passport)
+// Database config
+const db = require('./config/database')
 
 // Static public folder
 app.use(express.static(path.join(__dirname,'public')))
@@ -24,7 +26,7 @@ app.use(express.static(path.join(__dirname,'public')))
 mongoose.Promise = global.Promise
 
 // Connect to mongoose
-mongoose.connect('mongodb+srv://user:vidjot@cluster0-oohzx.mongodb.net/ideas')
+mongoose.connect(db.mongoURI)
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
 
